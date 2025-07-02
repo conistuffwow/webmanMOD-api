@@ -115,6 +115,13 @@ def reboot():
         return jsonify({"status": "rebooting"})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+    
+@app.route('api/v1/ping')
+def healthcheck():
+    try:
+        return jsonify({'status': 'ok}'}), 200
+    except Exception as e:
+        return jsonify({'status': str(e)}), 500
 
 if __name__ == '__main__':
     app.run(port=8080)
