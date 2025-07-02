@@ -116,12 +116,29 @@ def reboot():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
     
-@app.route('api/v1/ping')
+@app.route('/api/v1/ping')
 def healthcheck():
     try:
         return jsonify({'status': 'ok}'}), 200
     except Exception as e:
         return jsonify({'status': str(e)}), 500
+
+
+@app.route('/api/v1/fan')
+def getfan():
+    try:
+        r = requests.get(f'http://{PS3_IP}/cpursx.ps3', timeout=5)
+        text = r.text.upper()
+
+        fanmatch = re.search(r'FAN SPEED *: *(\d+%)', text)
+        fanspeed = fanmatch.group(1) if fanmatch else "Unknown"
+
+        return jsonify({
+            'speed': fanspeed
+        })
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
 
 if __name__ == '__main__':
     app.run(port=8080)
